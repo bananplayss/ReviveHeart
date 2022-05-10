@@ -1,0 +1,46 @@
+variables:
+	{revived.%player%} = false
+
+on join:
+	if {revived.%player%} is true:
+		wait 1 tick
+		set player's health to 3
+		wait 1 tick
+		set {revived.%player%} to false
+
+# on every skript and server load
+
+on skript load:
+	set {_l} to totem of undying of unbreaking 10 named "&c&lRevi&4&lve" 
+	set {_k} to red dye of infinity 1 named "&cHea&4rt" with enchant flags hidden with lore "&7Right click to add to" and "&7your &cmax-health"
+	register new shaped recipe for {_l} using {_k}, {_k}, {_k}, {_k}, totem of undying, {_k}, {_k}, {_k} and {_k} with id "revive_totem" in group "revtotem"
+
+
+# basic revive command
+
+command /revive [<offlineplayer>]:
+	aliases: rev
+	trigger:
+		if player's inventory contains totem of undying of unbreaking 10 named "&c&lRevi&4&lve":
+			if arg-1 is banned:
+				execute console command "unban %arg-1%"
+				send "&7|&c&lRevive&4&lSystem&7| You succesfully revived %arg-1%!"
+				wait 1 tick
+				remove totem of undying of unbreaking 10 named "&c&lRevi&4&lve" from player's inventory
+				set {revived.%arg-1%} to true
+			else if arg-1 is not set:
+				send "&7|&c&lRevive&4&lSystem&7| &c&oenter a player's name!"
+			else if arg-1 is executor:
+				send "&7|&c&lRevive&4&lSystem&7| &c&oYou can't revive yourself!"
+			else if arg-1 is not banned:
+				send "&7|&c&lRevive&4&lSystem&7| &c&o%arg-1% is not dead!"
+		else if player does not have totem of undying of unbreaking 10 named "&c&lRevi&4&lve":
+			send "&7|&c&lRevive&4&lSystem&7| &c&oYou don't have a revive totem in your inventory!"
+			
+#BONUS FEATURE
+# if you're an operator, you can give yourself a revive totem with this command 
+
+command /revtotem:
+	permission: op
+	trigger:
+		give player totem of undying of unbreaking 10 named "&c&lRevi&4&lve"
